@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>07_component_state</title>
+</head>
+<body>
+
+<div id="example"></div>
+
+<script type="text/javascript" src="../js/react.development.js"></script>
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<script type="text/javascript" src="../js/babel.min.js"></script>
+
+<script type="text/babel">
+  /*
+  需求: 自定义组件, 功能说明如下
+    1. 显示h2标题, 初始文本为: 你喜欢我
+    2. 点击标题更新为: 我喜欢你
+  */
+
+
+  /* 初始化状态->读取状态->更新状态->新增方法强制绑定this为组件对象 */
+
+
+  // 1.定义组件
+  class Like extends React.Component{
+
+    constructor(props){
+      // super将参数交给父类Component
+      super(props)
+      // 初始化状态
+      this.state = {
+        isLikeMe: false
+      }
+
+      // 将新增方法的内部this强制绑定组件对象
+      // bind会返回一个函数，这个函数和handleClick一模一样，但这里执行的不是下面那个新增方法
+      this.handleClick = this.handleClick.bind(this)
+    }
+
+    // 新添加方法：内部的this默认不是组件对象，而是undefined，此时要用bind强制绑定内部this指向组件对象
+    handleClick(){
+      console.log('handleClick',this)
+      // 得到状态 并取反
+      const isLikeMe = !this.state.isLikeMe
+      // 更新状态
+      this.setState({isLikeMe})
+    }
+
+    // render是原来就有组件类方法，这里是重写组件类方法
+    render(){
+      // 读取状态
+      // const isLikeMe = this.state.isLikeMe
+      const {isLikeMe} = this.state
+      return (<h2 onClick={this.handleClick}>{isLikeMe?'你喜欢我':'我喜欢你'}</h2>)
+    }
+
+  }
+  // 2.渲染组件标签
+  ReactDOM.render(<Like />, document.getElementById('example'))
+
+</script>
+</body>
+</html>
+
